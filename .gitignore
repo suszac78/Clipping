@@ -3,3 +3,13 @@ shorts/
 __pycache__/
 *.pyc
 .DS_Store
+# longform ad: venv, licensed music (no redistribution), render intermediates
+ads/content-rewards/longform/.sound-effects/
+ads/content-rewards/longform/node_modules
+ads/content-rewards/longform/assets/music-*
+ads/content-rewards/longform/sound-draft/
+ads/content-rewards/longform/sound-final/sound-effects-cache/
+ads/content-rewards/longform/*_seg*.mp4
+ads/content-rewards/longform/*_segs.txt
+ads/content-rewards/longform/*.log
+ads/content-rewards/longform/draft*.mp4

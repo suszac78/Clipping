@@ -1,0 +1,547 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Content Rewards Longform</title>
+<style>
+/*FONTS*/
+:root {
+  --canvas: #F7F7F8; --ink: #111114; --dim: #8A8A94; --line: #E7E7EC; --surface: #FFFFFF;
+  --or: #FF6207; --or2: #FF8A3D; --or3: #D94A00; --orA: rgba(255, 98, 7, .16);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { background: #0b0b0d; overflow: hidden; }
+body { font-family: 'CR', 'Inter Display', 'Inter', sans-serif; color: var(--ink); }
+#stage { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: hidden; background: var(--canvas); transform-origin: 0 0; }
+canvas.full { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+.layer { position: absolute; inset: 0; display: none; }
+.cam { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+.center { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; display: flex; align-items: center; justify-content: center; }
+.nw { white-space: nowrap; }
+
+/* title lines */
+.tline { font-size: 56px; font-weight: 600; letter-spacing: -1.6px; white-space: nowrap; position: relative; }
+.tline .w { display: inline-block; }
+.hl { position: relative; display: inline-block; }
+.hl > b { position: absolute; left: -10px; right: -10px; top: 4px; bottom: 0; background: var(--orA); border-radius: 10px; transform-origin: 0 50%; z-index: -1; }
+.tline .hlw { position: relative; z-index: 1; }
+.onor { color: #fff; }
+.onor .hl > b { background: rgba(255,255,255,.22); }
+
+/* brand */
+.mark img { position: absolute; }
+.word { font-weight: 700; letter-spacing: -5px; color: #fff; }
+
+/* UI */
+.card { position: absolute; background: var(--surface); border: 1px solid var(--line); border-radius: 28px; box-shadow: 0 30px 80px rgba(17,17,20,.08), 0 2px 6px rgba(17,17,20,.04); }
+.lbl { position: absolute; font-size: 20px; font-weight: 500; color: var(--dim); white-space: nowrap; }
+.inp { position: absolute; border: 1px solid var(--line); border-radius: 14px; background: #fff; font-size: 26px; font-weight: 500; padding: 0 22px; display: flex; align-items: center; white-space: nowrap; }
+.inp.focus { border-color: var(--or); box-shadow: 0 0 0 4px var(--orA); }
+.caret { display: inline-block; width: 2px; height: 30px; background: var(--or); margin-left: 2px; }
+.ph { color: #B5B5BE; }
+.chip { position: absolute; border: 1px solid var(--line); border-radius: 14px; background: #fff; font-size: 24px; font-weight: 600; display: flex; align-items: center; justify-content: center; white-space: nowrap; }
+.chip.on { border-color: var(--or); background: var(--orA); color: var(--or3); }
+.seg { position: absolute; background: #F1F1F4; border-radius: 16px; }
+.seg .opt { position: absolute; top: 0; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 600; color: #55555F; white-space: nowrap; }
+.seg .ind { position: absolute; top: 6px; bottom: 6px; background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+.btn { position: absolute; border-radius: 14px; background: var(--or); color: #fff; font-size: 24px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 12px; white-space: nowrap; }
+.ripple { position: absolute; border-radius: 50%; border: 3px solid var(--or); pointer-events: none; }
+.icon { position: absolute; border-radius: 12px; background: var(--or); overflow: hidden; }
+.icon img { position: absolute; left: 18%; top: 14%; width: 64%; }
+.pill { position: absolute; border-radius: 100px; font-size: 18px; font-weight: 600; padding: 6px 14px; white-space: nowrap; }
+.check { display: inline-flex; width: 30px; height: 30px; border-radius: 50%; background: var(--or); align-items: center; justify-content: center; }
+.spin { display: inline-block; width: 28px; height: 28px; border-radius: 50%; border: 3px solid #E2E2E8; border-top-color: var(--or); }
+.shimmer { position: absolute; border-radius: 8px; background: linear-gradient(90deg, #EFEFF3 0%, #F8F8FA 50%, #EFEFF3 100%); background-size: 300% 100%; }
+
+/* campaign page */
+#banner { position: absolute; left: 0; top: 0; width: 1600px; height: 540px; border-radius: 28px; overflow: hidden;
+  background: radial-gradient(ellipse 70% 80% at 50% 95%, #FF8A3D 0%, #F06A1C 35%, #C54A0E 75%, #9E3708 100%); }
+#banner .t { position: absolute; left: 0; right: 0; text-align: center; color: #fff; white-space: nowrap; }
+#cursor { position: absolute; left: 0; top: 0; width: 34px; height: 46px; transform-origin: 4px 4px; z-index: 50; }
+#flash { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <canvas id="grid" class="full" width="1920" height="1080"></canvas>
+  <canvas id="silk" class="full" width="960" height="540"></canvas>
+
+  <!-- S0: Introducing -->
+  <div class="layer" id="L0"><div class="center"><div id="intro" class="tline" style="font-size:44px;font-weight:500;color:var(--dim)">Introducing</div></div></div>
+
+  <!-- S1: brand reveal -->
+  <div class="layer" id="L1"><div class="center" style="flex-direction:column">
+    <div style="display:flex;align-items:center;gap:56px">
+      <div id="mark1" class="mark" style="position:relative;width:230px;height:265px"></div>
+      <div id="word1" class="word nw" style="font-size:150px">Content Rewards</div>
+    </div>
+    <div id="tag1" class="nw" style="margin-top:44px;font-size:46px;font-weight:500;color:rgba(255,255,255,.9);letter-spacing:-1px">The Marketplace for Virality</div>
+  </div></div>
+
+  <!-- titles (filled by JS) -->
+  <div id="LT"></div>
+
+  <!-- UI1: campaign builder -->
+  <div class="layer" id="U1"><div class="cam" id="cam1">
+    <div class="card" style="left:0;top:0;width:1200px;height:760px">
+      <div class="icon" style="left:56px;top:40px;width:52px;height:52px"><img src="assets/stars-white.png"></div>
+      <div class="nw" style="position:absolute;left:128px;top:46px;font-size:32px;font-weight:700;letter-spacing:-.5px">New campaign</div>
+      <div class="pill" id="u1status" style="right:56px;top:50px;background:#F1F1F4;color:#55555F">Draft</div>
+      <div style="position:absolute;left:0;right:0;top:120px;height:1px;background:var(--line)"></div>
+
+      <div class="lbl" style="left:60px;top:150px">Campaign name</div>
+      <div class="inp" id="u1name" style="left:60px;top:184px;width:1080px;height:68px"></div>
+
+      <div class="lbl" style="left:60px;top:280px">Campaign type</div>
+      <div class="chip" id="u1clip" style="left:60px;top:314px;width:180px;height:60px">Clipping</div>
+      <div class="chip" id="u1ugc" style="left:256px;top:314px;width:140px;height:60px">UGC</div>
+
+      <div class="lbl" style="left:60px;top:402px">How creators get paid</div>
+      <div class="seg" id="u1seg" style="left:60px;top:436px;width:700px;height:66px">
+        <div class="ind" id="u1ind"></div>
+        <div class="opt" style="left:0;width:175px">CPM</div><div class="opt" style="left:175px;width:175px">Retainer</div>
+        <div class="opt" style="left:350px;width:175px">Per post</div><div class="opt" style="left:525px;width:175px">Pool</div>
+      </div>
+
+      <div class="lbl" style="left:60px;top:530px">Rate per 1,000 views</div>
+      <div class="inp" id="u1rate" style="left:60px;top:564px;width:320px;height:68px"></div>
+      <div class="lbl" style="left:410px;top:530px">Budget</div>
+      <div class="inp" id="u1budget" style="left:410px;top:564px;width:320px;height:68px"></div>
+      <div class="btn" id="u1btn" style="left:800px;top:564px;width:340px;height:68px">Launch campaign</div>
+      <div class="ripple" id="u1rip"></div>
+
+      <div class="nw" style="position:absolute;left:60px;top:676px;font-size:21px;color:var(--dim);font-weight:500">Content Rewards tracks the views, calculates rewards, and pays creators automatically.</div>
+    </div>
+  </div></div>
+
+  <!-- UI2: campaign page + submit -->
+  <div class="layer" id="U2"><div class="cam" id="cam2">
+    <div id="banner">
+      <img src="assets/stars-white.png" style="position:absolute;left:776px;top:40px;width:48px">
+      <div class="t" style="top:120px;font-size:44px;font-weight:700;letter-spacing:0">ENGLISH</div>
+      <div class="t" id="lf" style="top:168px;font-size:150px;font-weight:800;letter-spacing:-4px;line-height:1">LONGFORM</div>
+      <div class="t" style="top:312px;font-size:190px;font-weight:800;letter-spacing:-2px;line-height:1;color:transparent;-webkit-text-stroke:4px #fff">UGC</div>
+      <div class="icon" style="left:48px;top:432px;width:40px;height:40px;border-radius:10px;background:#FF6207"><img src="assets/stars-white.png"></div>
+      <div class="nw" style="position:absolute;left:102px;top:436px;font-size:26px;font-weight:600;color:#fff">Content Rewards</div>
+      <div class="nw" style="position:absolute;left:48px;top:478px;font-size:40px;font-weight:700;color:#fff;letter-spacing:-1px">Long-form UGC</div>
+      <div style="position:absolute;right:48px;top:446px;font-size:24px;font-weight:500;color:rgba(255,255,255,.88);width:520px;line-height:1.35">Create long-form content about Content Rewards and get paid for your views</div>
+    </div>
+    <div class="pill" style="left:0;top:574px;font-size:24px;padding:14px 26px;border:1px solid var(--line);background:#fff"><span style="color:#20B26B">●</span> Joined</div>
+    <div class="pill" style="left:166px;top:574px;font-size:24px;padding:14px 26px;border:1px solid var(--line);background:#fff">Entertainment</div>
+    <div class="pill" style="left:366px;top:574px;font-size:24px;padding:14px 26px;border:1px solid var(--line);background:#fff;color:var(--or)">CPM</div>
+    <div class="btn" id="u2submit" style="left:1356px;top:566px;width:244px;height:70px;border-radius:100px;font-size:26px">Submit clip</div>
+    <div class="ripple" id="u2rip"></div>
+
+    <div class="nw" style="position:absolute;left:0;top:690px;font-size:28px;font-weight:700">Your submissions</div>
+    <div id="u2rows"></div>
+
+    <!-- modal -->
+    <div id="u2modal" style="position:absolute;left:350px;top:200px;width:900px;height:440px;opacity:0">
+      <div class="card" style="left:0;top:0;width:900px;height:440px;box-shadow:0 40px 120px rgba(17,17,20,.22)">
+        <div class="nw" style="position:absolute;left:48px;top:40px;font-size:34px;font-weight:700">Submit clip</div>
+        <div class="lbl" style="left:48px;top:112px">Video link</div>
+        <div class="inp" id="u2link" style="left:48px;top:146px;width:804px;height:68px"></div>
+        <div id="u2detect" class="nw" style="position:absolute;left:48px;top:240px;font-size:22px;font-weight:600;color:#55555F;display:flex;align-items:center;gap:12px">
+          <span style="display:inline-flex;width:40px;height:28px;border-radius:7px;background:#FF0033;align-items:center;justify-content:center"><span style="border-left:12px solid #fff;border-top:7px solid transparent;border-bottom:7px solid transparent;margin-left:3px"></span></span>
+          YouTube · long-form video detected</div>
+        <div class="btn" id="u2go" style="left:612px;top:330px;width:240px;height:66px">Submit</div>
+        <div id="u2done" class="nw" style="position:absolute;left:48px;top:344px;font-size:24px;font-weight:600;display:flex;align-items:center;gap:12px;opacity:0"><span class="check"><svg width="16" height="16" viewBox="0 0 16 16"><path d="M3 8.5l3.2 3L13 4.5" stroke="#fff" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Submitted for review</div>
+      </div>
+    </div>
+    <div class="ripple" id="u2rip2"></div>
+  </div></div>
+
+  <!-- UI3: verification + payout -->
+  <div class="layer" id="U3"><div class="cam" id="cam3">
+    <div class="card" style="left:0;top:0;width:1200px;height:720px">
+      <div class="nw" style="position:absolute;left:56px;top:44px;font-size:32px;font-weight:700;letter-spacing:-.5px">Campaign analytics</div>
+      <div class="pill" style="left:390px;top:48px;background:var(--orA);color:var(--or3)">Long-form UGC</div>
+      <div style="position:absolute;left:0;right:0;top:120px;height:1px;background:var(--line)"></div>
+
+      <div class="lbl" style="left:60px;top:160px">Verified views</div>
+      <div id="u3views" class="nw" style="position:absolute;left:56px;top:190px;font-size:104px;font-weight:700;letter-spacing:-4px;font-variant-numeric:tabular-nums">0</div>
+      <div id="u3bot" class="nw" style="position:absolute;left:60px;top:322px;font-size:24px;font-weight:600;color:var(--dim);opacity:0">− 3,412 bot views removed</div>
+
+      <div style="position:absolute;left:56px;top:400px;width:540px;height:270px;border-radius:22px;background:#FAFAFB;border:1px solid var(--line)">
+        <div class="lbl" style="left:32px;top:28px">Payout · CPM $3.00</div>
+        <div id="u3pay" class="nw" style="position:absolute;left:30px;top:62px;font-size:88px;font-weight:700;letter-spacing:-3px;font-variant-numeric:tabular-nums">$0.00</div>
+        <div id="u3paid" class="nw" style="position:absolute;left:32px;top:190px;font-size:24px;font-weight:600;display:flex;align-items:center;gap:12px;opacity:0"><span class="check"><svg width="16" height="16" viewBox="0 0 16 16"><path d="M3 8.5l3.2 3L13 4.5" stroke="#fff" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Paid automatically</div>
+      </div>
+
+      <div class="nw" style="position:absolute;left:660px;top:156px;font-size:26px;font-weight:700">Verification</div>
+      <div id="u3rows"></div>
+    </div>
+  </div></div>
+
+  <!-- proof -->
+  <div class="layer" id="P"><div class="center"><div class="tline" id="proof" style="font-size:60px"><span class="hl"><b></b><span class="hlw" id="pnum" style="font-variant-numeric:tabular-nums">0</span></span> creators signed up.</div></div></div>
+
+  <!-- closer -->
+  <div class="layer" id="C"><div class="center"><div class="tline onor" id="closer" style="font-size:72px;font-weight:700;letter-spacing:-2.5px">
+    Run <span class="hl" id="rot" style="width:330px;text-align:center;height:1.3em;line-height:1.3em;vertical-align:-0.3em;overflow:hidden"><b style="top:0;bottom:0"></b><span id="rotw" class="hlw" style="display:block"></span></span> campaigns.</div></div></div>
+
+  <!-- end card -->
+  <div class="layer" id="E"><div class="center" style="flex-direction:column">
+    <div style="display:flex;align-items:center;gap:48px">
+      <div id="mark2" class="mark" style="position:relative;width:190px;height:219px"></div>
+      <div id="word2" class="word nw" style="font-size:130px">Content Rewards</div>
+    </div>
+    <div id="tag2" class="nw" style="margin-top:36px;font-size:42px;font-weight:500;color:rgba(255,255,255,.92);letter-spacing:-1px">The Marketplace for Virality</div>
+    <div id="ctas" style="display:flex;gap:24px;margin-top:60px">
+      <div class="nw" style="font-size:32px;font-weight:700;padding:24px 48px;border-radius:100px;background:#fff;color:var(--or3)">Launch a campaign</div>
+      <div class="nw" style="font-size:32px;font-weight:700;padding:22px 46px;border-radius:100px;border:3px solid rgba(255,255,255,.9);color:#fff">Start earning</div>
+    </div>
+    <div id="url" class="nw" style="margin-top:44px;font-size:30px;font-weight:600;color:rgba(255,255,255,.85);letter-spacing:.5px">contentrewards.com</div>
+  </div></div>
+
+  <svg id="cursor" viewBox="0 0 34 46"><path d="M4 3 L4 36 L12.5 28 L18.5 42 L24 39.6 L18 26 L29.5 26 Z" fill="#111114" stroke="#fff" stroke-width="2.6" stroke-linejoin="round"/></svg>
+  <div id="flash"></div>
+</div>
+
+<script>
+/* BEAT SHEET (seconds) ------------------------------------------------------
+  0.0  "Introducing" fades up                                  | soft pop
+  2.0  orange silk sweeps in, 6 stars pop clockwise, wordmark  | whoosh, pops x6, impact 3.3
+  4.6  "The Marketplace for Virality"                          | tick
+  7.0  T: Brands want views. Creators want to get paid.         | whoosh
+ 11.0  T: Content Rewards connects them.                        | whoosh
+ 14.5  T: Launch your campaign.                                 | whoosh
+ 17.0  UI1 builder: type name, UGC chip, CPM, $3.00 / $5,000,   | typing, clicks, pop
+       click Launch -> Campaign live (25.0)                    | success pop
+ 27.0  T: Creators make the content.                           | whoosh
+ 29.5  UI2 campaign page, Submit clip, paste link, submit,      | clicks, typing, pops
+       submissions approved one by one                         | ticks
+ 39.5  T: Every view gets checked.                              | whoosh
+ 42.0  UI3 views count, 4 checks, bot views removed, payout     | ticks, glitch, success
+ 51.0  Proof: 3M+ creators signed up.                           | whoosh, tick-up
+ 54.5  Closer on silk: Run [CPM/retainer/per-post/pool] camp.   | riser -> impact 58.5
+ 58.5  End card: logo, tagline, CTAs, url                       | impact, ding
+--------------------------------------------------------------------------- */
+const W = 1920, H = 1080, DUR = 62;
+window.VIDEO = { w: W, h: H, duration: DUR };
+
+function spring(t, w = 14, z = 0.82) {
+  if (t <= 0) return 0;
+  if (z >= 1) return 1 - Math.exp(-w * t) * (1 + w * t);
+  const wd = w * Math.sqrt(1 - z * z);
+  return 1 - Math.exp(-z * w * t) * (Math.cos(wd * t) + (z * w / wd) * Math.sin(wd * t));
+}
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const ease = x => (x = clamp(x), x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
+const eOut = x => 1 - Math.pow(1 - clamp(x), 3);
+const lerp = (a, b, k) => a + (b - a) * k;
+const seg = (t, a, b) => clamp((t - a) / (b - a));
+const kf = keys => t => { if (t <= keys[0][0]) return keys[0][1]; for (let i = 1; i < keys.length; i++) { const [a, va] = keys[i - 1], [b, vb, e = ease] = keys[i]; if (t <= b) return lerp(va, vb, e((t - a) / (b - a))); } return keys[keys.length - 1][1]; };
+const rng = s => () => (s = (s + 0x6D2B79F5) | 0, s = Math.imul(s ^ (s >>> 15), 1 | s), s ^= s + Math.imul(s ^ (s >>> 7), 61 | s), ((s ^ (s >>> 14)) >>> 0) / 4294967296);
+const $ = id => document.getElementById(id);
+const fmt = n => Math.round(n).toLocaleString('en-US');
+
+// camera: keys [[t, fx, fy, s], ...] -> {fx, fy, s}
+function camKF(keys) { const fx = kf(keys.map(k => [k[0], k[1]])), fy = kf(keys.map(k => [k[0], k[2]])), s = kf(keys.map(k => [k[0], k[3]])); return t => ({ fx: fx(t), fy: fy(t), s: s(t) }); }
+const applyCam = (el, c) => { el.style.transform = `translate(${960 - c.fx * c.s}px, ${540 - c.fy * c.s}px) scale(${c.s})`; };
+const toScreen = (c, x, y) => [960 + (x - c.fx) * c.s, 540 + (y - c.fy) * c.s];
+
+// layer visibility with blur-dissolve
+function show(el, t, a, b, d = .38) {
+  const o = Math.min(ease(seg(t, a, a + d)), 1 - ease(seg(t, b - d, b)));
+  if (o <= 0.001) { el.style.display = 'none'; return 0; }
+  el.style.display = 'block'; el.style.opacity = o;
+  el.style.filter = o < .999 ? `blur(${(1 - o) * 9}px)` : 'none';
+  return o;
+}
+const press = (t, tc) => 1 - .14 * (seg(t, tc - .09, tc) - seg(t, tc, tc + .16));
+function ripple(el, t, tc, x, y) {
+  const p = seg(t, tc, tc + .55); if (p <= 0 || p >= 1) { el.style.opacity = 0; return; }
+  const r = 20 + 70 * eOut(p);
+  Object.assign(el.style, { left: (x - r) + 'px', top: (y - r) + 'px', width: 2 * r + 'px', height: 2 * r + 'px', opacity: (1 - p) * .8 });
+}
+const CHECK = '<span class="check"><svg width="16" height="16" viewBox="0 0 16 16"><path d="M3 8.5l3.2 3L13 4.5" stroke="#fff" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span>';
+
+/* ---------- silk gradient (canvas, drawn at half res, scaled up) ---------- */
+const silk = $('silk'), sctx = silk.getContext('2d');
+function drawSilk(t) {
+  const w = 960, h = 540, c = sctx;
+  const g = c.createLinearGradient(0, 0, w, h);
+  g.addColorStop(0, '#FF9A52'); g.addColorStop(.45, '#FF6207'); g.addColorStop(1, '#C94306');
+  c.fillStyle = g; c.fillRect(0, 0, w, h);
+  c.save(); c.translate(w / 2, h / 2); c.rotate(-0.55);
+  const bands = [[-520, 150, .16, 18], [-180, 110, .10, -12], [120, 190, .13, 14], [420, 120, .09, -9], [650, 160, .12, 11]];
+  for (const [x0, bw, a, sp] of bands) {
+    const x = x0 + Math.sin(t * .35 + x0) * 60 + t * sp;
+    const lg = c.createLinearGradient(x - bw, 0, x + bw, 0);
+    lg.addColorStop(0, 'rgba(255,255,255,0)'); lg.addColorStop(.5, `rgba(255,236,220,${a})`); lg.addColorStop(1, 'rgba(255,255,255,0)');
+    c.fillStyle = lg; c.fillRect(x - bw, -900, bw * 2, 1800);
+  }
+  const dk = [[-330, 140, .14, 8], [300, 170, .12, -6]];
+  for (const [x0, bw, a, sp] of dk) {
+    const x = x0 + Math.cos(t * .3 + x0) * 50 + t * sp;
+    const lg = c.createLinearGradient(x - bw, 0, x + bw, 0);
+    lg.addColorStop(0, 'rgba(120,30,0,0)'); lg.addColorStop(.5, `rgba(120,30,0,${a})`); lg.addColorStop(1, 'rgba(120,30,0,0)');
+    c.fillStyle = lg; c.fillRect(x - bw, -900, bw * 2, 1800);
+  }
+  c.restore();
+  const v = c.createRadialGradient(w / 2, h / 2, h * .3, w / 2, h / 2, w * .75);
+  v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, 'rgba(70,15,0,.35)');
+  c.fillStyle = v; c.fillRect(0, 0, w, h);
+}
+
+/* ---------- dotted grid (drawn once) ---------- */
+(function () {
+  const c = $('grid').getContext('2d');
+  for (let y = 0; y < H; y += 36) for (let x = 0; x < W; x += 36) {
+    const d = Math.hypot(x - W / 2, y - H / 2) / 900;
+    c.fillStyle = `rgba(150,150,160,${clamp(.55 - d * .5) * .55})`;
+    c.beginPath(); c.arc(x + 18, y + 18, 1.6, 0, 7); c.fill();
+  }
+})();
+
+/* ---------- star marks ---------- */
+const STARS = /*STARS*/null;
+const STAR_ORDER = [0, 2, 4, 5, 3, 1]; // clockwise from top
+function buildMark(el) {
+  const W0 = el.offsetWidth || parseFloat(el.style.width), H0 = parseFloat(el.style.height);
+  return STARS.stars.map(s => { const im = document.createElement('img'); im.src = s.f;
+    Object.assign(im.style, { left: s.x * W0 + 'px', top: s.y * H0 + 'px', width: s.w * W0 + 'px', height: s.h * H0 + 'px', transformOrigin: '50% 55%' });
+    el.appendChild(im); return im; });
+}
+const mark1 = buildMark($('mark1')), mark2 = buildMark($('mark2'));
+function animMark(imgs, t, t0, step = .12) {
+  STAR_ORDER.forEach((idx, i) => {
+    const k = spring(t - t0 - i * step, 16, .6);
+    imgs[idx].style.opacity = clamp((t - t0 - i * step) * 8);
+    imgs[idx].style.transform = `scale(${Math.max(0, k)}) rotate(${(1 - k) * -120}deg)`;
+  });
+}
+
+/* ---------- title lines ---------- */
+const TITLES = [
+  { a: 6.923, b: 10.731, html: 'Brands want views. Creators want to [get paid.]' },
+  { a: 10.731, b: 14.562, html: 'Content Rewards [connects them.]' },
+  { a: 14.562, b: 16.85, html: 'Launch your [campaign.]' },
+  { a: 27.101, b: 29.39, html: 'Creators [make the content.]' },
+  { a: 39.64, b: 41.93, html: 'Every view gets [checked.]' },
+];
+TITLES.forEach((T, i) => {
+  const L = document.createElement('div'); L.className = 'layer'; L.id = 'T' + i;
+  const words = T.html.replace(/\[(.+?)\]/, (_, m) => '\u0001' + m + '\u0002').split(' ');
+  let inHl = false, h = '';
+  for (const w0 of words) {
+    let w = w0, open = false, close = false;
+    if (w.includes('\u0001')) { open = true; w = w.replace('\u0001', ''); }
+    if (w.includes('\u0002')) { close = true; w = w.replace('\u0002', ''); }
+    if (open) { h += '<span class="hl"><b></b>'; inHl = true; }
+    h += `<span class="w ${inHl ? 'hlw' : ''}">${w}</span>`;
+    if (close) { h += '</span>'; inHl = false; }
+    h += ' ';
+  }
+  L.innerHTML = `<div class="center"><div class="cam" style="position:relative;transform-origin:50% 50%"><div class="tline">${h.trim()}</div></div></div>`;
+  $('LT').appendChild(L); T.el = L; T.cam = L.querySelector('.cam'); T.line = L.querySelector('.tline');
+  T.words = [...L.querySelectorAll('.w')]; T.box = L.querySelector('.hl > b');
+});
+function renderTitle(T, t) {
+  if (!show(T.el, t, T.a, T.b)) return;
+  const S = Math.min(3.2, 0.74 * W / T.line.offsetWidth);
+  const s = lerp(S * .62, S, ease(seg(t, T.a, T.a + 1.5))) * (1 + .035 * seg(t, T.a + 1.5, T.b));
+  T.cam.style.transform = `scale(${s})`;
+  T.words.forEach((w, i) => { const p = eOut(seg(t, T.a + .1 + i * .085, T.a + .45 + i * .085)); w.style.opacity = p; w.style.transform = `translateY(${(1 - p) * 14}px)`; });
+  if (T.box) T.box.style.transform = `scaleX(${ease(seg(t, T.a + 1.05, T.a + 1.55))})`;
+}
+
+/* ---------- UI1: builder ---------- */
+const A = 16.745;
+const cam1 = camKF([
+  [A, 600, 380, 1.0], [A + .9, 330, 218, 1.75], [A + 1.7, 420, 218, 1.75], [A + 2.6, 300, 344, 1.75],
+  [A + 3.6, 300, 344, 1.75], [A + 4.3, 410, 469, 1.6], [A + 5.0, 410, 469, 1.6], [A + 5.7, 400, 598, 1.55],
+  [A + 6.9, 400, 598, 1.55], [A + 7.6, 900, 598, 1.6], [A + 8.5, 900, 598, 1.6], [A + 9.3, 600, 380, 1.02], [A + 10.1, 600, 380, 1.05]]);
+const cur1x = kf([[A + 1.8, 700], [A + 3.0, 326], [A + 4.3, 147], [A + 5.6, 220], [A + 7.4, 960], [A + 9.0, 1000]]);
+const cur1y = kf([[A + 1.8, 420], [A + 3.0, 350], [A + 4.3, 476], [A + 5.6, 600], [A + 7.4, 604], [A + 9.0, 680]]);
+const typeIn = (el, full, t, t0, cps, ph, focusEnd) => {
+  const n = Math.floor(clamp((t - t0) * cps, 0, full.length));
+  const focused = t >= t0 - .15 && t < focusEnd;
+  const blink = focused && (n < full.length || Math.floor((t - t0) * 2.2) % 2 === 0);
+  el.innerHTML = (n ? full.slice(0, n) : (focused ? '' : `<span class="ph">${ph}</span>`)) + (blink ? '<span class="caret"></span>' : '');
+  el.classList.toggle('focus', focused);
+};
+function renderU1(t) {
+  if (!show($('U1'), t, A, A + 10.46)) return null;
+  const c = cam1(t); applyCam($('cam1'), c);
+  typeIn($('u1name'), 'Long-form UGC', t, A + 1.0, 24, 'Name your campaign', A + 2.0);
+  $('u1ugc').classList.toggle('on', t >= A + 3.0);
+  $('u1ugc').style.transform = `scale(${press(t, A + 3.0)})`;
+  const ip = ease(seg(t, A + 4.3, A + 4.6));
+  Object.assign($('u1ind').style, { left: '6px', width: (175 - 12) + 'px', opacity: ip, transform: `scale(${.85 + .15 * ip})` });
+  $('u1seg').children[1].style.color = t >= A + 4.3 ? 'var(--or3)' : '#55555F';
+  typeIn($('u1rate'), '$3.00', t, A + 5.8, 18, '$0.00', A + 6.35);
+  typeIn($('u1budget'), '$5,000', t, A + 6.45, 18, '$1,000 min', A + 7.0);
+  const live = t >= A + 7.4;
+  $('u1btn').innerHTML = live ? CHECK.replace('var(--or)', '#fff') + 'Campaign live' : 'Launch campaign';
+  $('u1btn').style.transform = `scale(${press(t, A + 7.4) * (live ? 1 + .06 * Math.max(0, 1 - spring(t - A - 7.4, 18, .5)) : 1)})`;
+  $('u1status').textContent = live ? 'Live' : 'Draft';
+  $('u1status').style.background = live ? 'var(--orA)' : '#F1F1F4'; $('u1status').style.color = live ? 'var(--or3)' : '#55555F';
+  ripple($('u1rip'), t, A + 7.4, 970, 598);
+  const cp = [[A + 3.0], [A + 4.3], [A + 7.4]];
+  return { c, x: cur1x(t), y: cur1y(t), a: A + 1.8, b: A + 9.2, clicks: [A + 3.0, A + 4.3, A + 7.4] };
+}
+
+/* ---------- UI2: campaign page ---------- */
+const B = 29.283;
+const ROWS2 = [
+  ['How I make money with Content Rewards', '14:52'],
+  ['Clipping vs. UGC: which pays more?', '21:07'],
+  ['I tried every payout model for 30 days', '18:33'],
+];
+$('u2rows').innerHTML = ROWS2.map((r, i) => `
+  <div class="r2" style="position:absolute;left:0;top:${744 + i * 112}px;width:1600px;height:96px;border:1px solid var(--line);border-radius:18px;background:#fff">
+    <div style="position:absolute;left:16px;top:12px;width:128px;height:72px;border-radius:10px;background:linear-gradient(135deg,#FF8A3D,#C94306)"><img src="assets/stars-white.png" style="position:absolute;left:46px;top:16px;width:36px"><span style="position:absolute;right:6px;bottom:5px;font-size:13px;font-weight:700;color:#fff;background:rgba(0,0,0,.55);padding:1px 6px;border-radius:5px">${r[1]}</span></div>
+    <div class="nw" style="position:absolute;left:170px;top:18px;font-size:26px;font-weight:600">${r[0]}</div>
+    <div class="nw" style="position:absolute;left:170px;top:56px;font-size:19px;font-weight:500;color:var(--dim)">YouTube · long-form</div>
+    <div class="st" style="position:absolute;right:24px;top:26px;width:170px;height:44px"></div>
+  </div>`).join('');
+const rows2 = [...document.querySelectorAll('.r2')];
+const cam2 = camKF([
+  [B, 800, 290, 1.12], [B + 1.6, 800, 270, 1.32], [B + 2.5, 1360, 600, 1.75], [B + 3.2, 1360, 600, 1.75],
+  [B + 3.9, 800, 420, 1.45], [B + 4.6, 700, 410, 1.6], [B + 5.3, 900, 420, 1.55], [B + 6.4, 900, 420, 1.5],
+  [B + 7.2, 800, 860, 1.25], [B + 8.6, 800, 870, 1.25], [B + 9.4, 800, 560, .98], [B + 10.1, 800, 560, 1.0]]);
+const cur2x = kf([[B + 1.6, 1100], [B + 2.9, 1470], [B + 4.4, 1120], [B + 5.8, 740], [B + 7.2, 800]]);
+const cur2y = kf([[B + 1.6, 700], [B + 2.9, 604], [B + 4.4, 470], [B + 5.8, 568], [B + 7.2, 760]]);
+function renderU2(t) {
+  if (!show($('U2'), t, B, B + 10.46)) return null;
+  const c = cam2(t); applyCam($('cam2'), c);
+  $('u2submit').style.transform = `scale(${press(t, B + 2.9)})`;
+  ripple($('u2rip'), t, B + 2.9, 1478, 601);
+  const mo = Math.min(eOut(seg(t, B + 3.0, B + 3.4)), 1 - ease(seg(t, B + 6.5, B + 6.9)));
+  const m = $('u2modal'); m.style.opacity = mo; m.style.transform = `translateY(${(1 - mo) * 30}px) scale(${.96 + .04 * mo})`;
+  typeIn($('u2link'), 'youtube.com/watch?v=cr-longform', t, B + 3.6, 34, 'Paste your video link', B + 4.7);
+  const dp = eOut(seg(t, B + 4.7, B + 5.0)); $('u2detect').style.opacity = dp; $('u2detect').style.transform = `translateY(${(1 - dp) * 10}px)`;
+  $('u2go').style.transform = `scale(${press(t, B + 5.8)})`; $('u2go').style.opacity = t < B + 5.95 ? 1 : 0;
+  ripple($('u2rip2'), t, B + 5.8, 350 + 732, 200 + 363);
+  const dn = eOut(seg(t, B + 5.95, B + 6.2)); $('u2done').style.opacity = dn;
+  rows2.forEach((r, i) => {
+    const ta = B + 6.6 + i * .18, p = spring(t - ta, 14, .9);
+    r.style.opacity = clamp((t - ta) * 5); r.style.transform = `translateY(${(1 - p) * 40}px)`;
+    const tok = B + 7.5 + i * .45, st = r.querySelector('.st');
+    st.innerHTML = t < tok
+      ? `<div class="pill" style="right:0;top:6px;background:#F1F1F4;color:#55555F;display:flex;align-items:center;gap:8px"><span class="spin" style="width:16px;height:16px;border-width:2px;transform:rotate(${t * 400}deg)"></span>In review</div>`
+      : `<div class="pill" style="right:0;top:6px;background:var(--orA);color:var(--or3);transform:scale(${1 + .12 * (1 - spring(t - tok, 18, .55))})">✓ Approved</div>`;
+  });
+  return { c, x: cur2x(t), y: cur2y(t), a: B + 1.6, b: B + 7.0, clicks: [B + 2.9, B + 5.8] };
+}
+
+/* ---------- UI3: verification ---------- */
+const C3 = 41.822;
+const VROWS = ['Platform data', 'Independent verification', 'Fraud analysis', 'Verified reporting'];
+$('u3rows').innerHTML = VROWS.map((r, i) => `
+  <div class="v3" style="position:absolute;left:660px;top:${212 + i * 84}px;width:484px;height:70px;border:1px solid var(--line);border-radius:16px;background:#fff">
+    <div class="ic" style="position:absolute;left:20px;top:20px;width:30px;height:30px"></div>
+    <div class="nw" style="position:absolute;left:68px;top:20px;font-size:24px;font-weight:600">${r}</div>
+    <div class="shimmer" style="right:22px;top:26px;width:110px;height:18px"></div>
+  </div>`).join('');
+const vrows = [...document.querySelectorAll('.v3')];
+const cam3 = camKF([
+  [C3, 330, 250, 1.7], [C3 + 2.0, 330, 260, 1.7], [C3 + 2.7, 900, 340, 1.45], [C3 + 4.3, 900, 360, 1.45],
+  [C3 + 4.9, 330, 280, 1.6], [C3 + 5.6, 330, 290, 1.6], [C3 + 6.3, 330, 530, 1.6], [C3 + 7.6, 330, 535, 1.6],
+  [C3 + 8.4, 600, 360, 1.05], [C3 + 9.1, 600, 360, 1.07]]);
+function renderU3(t) {
+  if (!show($('U3'), t, C3, C3 + 9.39)) return null;
+  const c = cam3(t); applyCam($('cam3'), c);
+  const removed = 3412, gross = 184230;
+  let v = lerp(0, gross, ease(seg(t, C3 + .3, C3 + 2.0)));
+  v -= removed * ease(seg(t, C3 + 5.0, C3 + 5.6));
+  $('u3views').textContent = fmt(v);
+  const bp = eOut(seg(t, C3 + 4.9, C3 + 5.2)); $('u3bot').style.opacity = bp; $('u3bot').style.transform = `translateY(${(1 - bp) * 10}px)`;
+  vrows.forEach((r, i) => {
+    const ta = C3 + 2.5 + i * .4, done = C3 + 3.0 + i * .4;
+    r.style.opacity = clamp((t - ta + .4) * 4);
+    r.querySelector('.ic').innerHTML = t < done ? `<span class="spin" style="transform:rotate(${t * 420}deg)"></span>` : `<span style="display:inline-block;transform:scale(${spring(t - done, 18, .55)})">${CHECK}</span>`;
+    const sh = r.querySelector('.shimmer'); sh.style.opacity = t < done ? 1 : 0; sh.style.backgroundPosition = `${(1 - ((t * 1.2) % 1)) * 300}% 0`;
+    r.style.borderColor = t >= done && t < done + .5 ? 'var(--or)' : 'var(--line)';
+  });
+  const net = gross - removed;
+  $('u3pay').textContent = '$' + (net / 1000 * 3 * ease(seg(t, C3 + 6.2, C3 + 7.0))).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const pd = t >= C3 + 7.15; $('u3paid').style.opacity = pd ? 1 : 0; $('u3paid').style.transform = `scale(${pd ? spring(t - C3 - 7.15, 16, .6) : 0})`; $('u3paid').style.transformOrigin = '0 50%';
+  return null;
+}
+
+/* ---------- main seek ---------- */
+const ROT = ['CPM', 'retainer', 'per-post', 'pool'];
+function seek(t) {
+  t = clamp(t, 0, DUR - 1e-4);
+  // silk: on for brand reveal (2.0–7.0) and closer/end (54.5–62)
+  const silkA = Math.min(ease(seg(t, 2.0, 2.9)), 1 - ease(seg(t, 6.52, 6.95)));
+  const silkB = ease(seg(t, 54.18, 54.98));
+  const sOn = Math.max(silkA, silkB);
+  silk.style.display = sOn > 0 ? 'block' : 'none';
+  if (sOn > 0) {
+    drawSilk(t);
+    const r = t < 30 ? lerp(0, 1300, ease(seg(t, 2.0, 2.9))) : lerp(0, 1300, ease(seg(t, 54.18, 54.98)));
+    silk.style.clipPath = `circle(${r}px at 50% 50%)`;
+    silk.style.opacity = t < 30 ? (1 - ease(seg(t, 6.52, 6.95))) : 1;
+  }
+  $('grid').style.opacity = 0.0 + .9 * Math.min(ease(seg(t, 51.0, 51.5)), 1 - ease(seg(t, 54.1, 54.5)));
+  $('grid').style.transform = `scale(${1 + .04 * seg(t, 51, 54.6)})`;
+
+  // S0 Introducing
+  if (show($('L0'), t, 0.2, 2.35, .45)) { const s = 1 + .08 * ease(seg(t, .2, 2.4)); $('intro').style.transform = `scale(${s})`; $('intro').style.letterSpacing = lerp(4, -1, ease(seg(t, .2, 2.0))) + 'px'; }
+
+  // S1 brand
+  if (show($('L1'), t, 2.3, 6.923, .3)) {
+    animMark(mark1, t, 2.55);
+    const wp = eOut(seg(t, 3.115, 3.7)); $('word1').style.opacity = wp; $('word1').style.transform = `translateX(${(1 - wp) * -40}px)`;
+    $('word1').style.letterSpacing = lerp(4, -5, eOut(seg(t, 3.115, 4.0))) + 'px';
+    const tp = eOut(seg(t, 4.6, 5.1)); $('tag1').style.opacity = tp; $('tag1').style.transform = `translateY(${(1 - tp) * 16}px)`;
+    $('L1').firstElementChild.style.transform = `scale(${1 + .03 * seg(t, 2.3, 7)})`;
+  }
+
+  TITLES.forEach(T => renderTitle(T, t));
+  const k1 = renderU1(t), k2 = renderU2(t); renderU3(t);
+
+  // cursor (screen space)
+  const k = k1 || k2; const cu = $('cursor');
+  const cvis = k ? Math.min(eOut(seg(t, k.a, k.a + .3)), 1 - eOut(seg(t, k.b - .3, k.b))) : 0;
+  if (cvis > 0) {
+    const [sx, sy] = toScreen(k.c, k.x, k.y);
+    const pr = k.clicks.reduce((m, tc) => Math.min(m, press(t, tc)), 1);
+    cu.style.display = 'block'; cu.style.opacity = cvis;
+    cu.style.transform = `translate(${sx - 4}px, ${sy - 4}px) scale(${1.15 * pr})`;
+  } else cu.style.display = 'none';
+
+  // proof
+  if (show($('P'), t, 51.11, 54.5)) {
+    const p = ease(seg(t, 51.4, 53.11));
+    $('pnum').textContent = p < 1 ? fmt(p * 3000000) : '3M+';
+    const L = $('proof'); L.style.transform = `scale(${lerp(1.0, 1.25, ease(seg(t, 51.11, 54.5)))})`;
+    L.querySelector('b').style.transform = `scaleX(${ease(seg(t, 53.0, 53.5))})`;
+  }
+
+  // closer
+  if (show($('C'), t, 54.5, 58.85)) {
+    const i = Math.min(ROT.length - 1, Math.floor(Math.max(0, t - 55.184) / .75));
+    const ph = (t - 55.184) - i * .75, sl = i === 0 ? eOut(seg(t, 54.78, 55.18)) : eOut(seg(ph, 0, .28));
+    $('rotw').textContent = ROT[i];
+    $('rotw').style.transform = `translateY(${(1 - sl) * 60}px)`; $('rotw').style.opacity = sl;
+    $('rot').querySelector('b').style.transform = `scaleX(${ease(seg(t, 54.78, 55.28))})`;
+    $('closer').style.transform = `scale(${1 + .06 * seg(t, 54.5, 58.85)})`;
+  }
+
+  // end card
+  if (show($('E'), t, 58.75, DUR + 1, .3)) {
+    animMark(mark2, t, 58.85, .09);
+    const wp = eOut(seg(t, 59.25, 59.75)); $('word2').style.opacity = wp; $('word2').style.transform = `translateX(${(1 - wp) * -30}px)`;
+    const tp = eOut(seg(t, 59.75, 60.15)); $('tag2').style.opacity = tp;
+    const cp = spring(t - 60.15, 14, .75); $('ctas').style.opacity = clamp((t - 60.15) * 5); $('ctas').style.transform = `translateY(${(1 - cp) * 30}px)`;
+    $('url').style.opacity = eOut(seg(t, 60.55, 60.95));
+  }
+  // tiny flash on the two big brand hits
+  $('flash').style.opacity = Math.max(.25 * (1 - seg(t, 2.0, 2.35)) * (t >= 2.0), .2 * (1 - seg(t, 58.75, 59.1)) * (t >= 58.75));
+}
+window.seek = seek;
+
+/* ---------- preview mode ---------- */
+if (!location.search.includes('render')) {
+  const fit = () => { const s = Math.min(innerWidth / W, innerHeight / H); $('stage').style.transform = `scale(${s})`; };
+  addEventListener('resize', fit); fit();
+  const st = performance.now(); (function loop() { seek(((performance.now() - st) / 1000) % DUR); requestAnimationFrame(loop); })();
+} else seek(0);
+</script>
+</body>
+</html>

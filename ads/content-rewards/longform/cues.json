@@ -1,0 +1,233 @@
+[
+ {
+  "t": 0.25,
+  "type": "appear",
+  "desc": "Introducing fades up"
+ },
+ {
+  "t": 2.0,
+  "type": "movement",
+  "desc": "orange silk sweeps in"
+ },
+ {
+  "t": 2.55,
+  "type": "appear",
+  "desc": "stars pop in"
+ },
+ {
+  "t": 3.115,
+  "type": "reveal",
+  "desc": "wordmark lands"
+ },
+ {
+  "t": 4.6,
+  "type": "hover_or_small_ui",
+  "desc": "tagline"
+ },
+ {
+  "t": 6.923,
+  "type": "scene_cut",
+  "desc": "title: brands/creators"
+ },
+ {
+  "t": 10.731,
+  "type": "scene_cut",
+  "desc": "title: connects them"
+ },
+ {
+  "t": 14.562,
+  "type": "scene_cut",
+  "desc": "title: launch"
+ },
+ {
+  "t": 16.745,
+  "type": "scene_cut",
+  "desc": "builder UI"
+ },
+ {
+  "t": 17.745,
+  "type": "typing",
+  "desc": "type campaign name",
+  "dur": 0.55
+ },
+ {
+  "t": 19.745,
+  "type": "click",
+  "desc": "click UGC"
+ },
+ {
+  "t": 21.045,
+  "type": "click",
+  "desc": "click CPM"
+ },
+ {
+  "t": 22.545,
+  "type": "typing",
+  "desc": "type rate",
+  "dur": 0.3
+ },
+ {
+  "t": 23.195,
+  "type": "typing",
+  "desc": "type budget",
+  "dur": 0.35
+ },
+ {
+  "t": 24.145,
+  "type": "click",
+  "desc": "click Launch"
+ },
+ {
+  "t": 24.245,
+  "type": "success",
+  "desc": "campaign live"
+ },
+ {
+  "t": 27.101,
+  "type": "scene_cut",
+  "desc": "title: creators"
+ },
+ {
+  "t": 29.283,
+  "type": "scene_cut",
+  "desc": "campaign page"
+ },
+ {
+  "t": 32.183,
+  "type": "click",
+  "desc": "click Submit clip"
+ },
+ {
+  "t": 32.333,
+  "type": "appear",
+  "desc": "modal opens"
+ },
+ {
+  "t": 32.883,
+  "type": "typing",
+  "desc": "paste link",
+  "dur": 0.95
+ },
+ {
+  "t": 33.983,
+  "type": "appear",
+  "desc": "YouTube detected"
+ },
+ {
+  "t": 35.083,
+  "type": "click",
+  "desc": "click Submit"
+ },
+ {
+  "t": 35.233,
+  "type": "success",
+  "desc": "submitted"
+ },
+ {
+  "t": 36.783,
+  "type": "hover_or_small_ui",
+  "desc": "approved 1"
+ },
+ {
+  "t": 37.233,
+  "type": "hover_or_small_ui",
+  "desc": "approved 2"
+ },
+ {
+  "t": 37.683,
+  "type": "hover_or_small_ui",
+  "desc": "approved 3"
+ },
+ {
+  "t": 39.64,
+  "type": "scene_cut",
+  "desc": "title: checked"
+ },
+ {
+  "t": 41.822,
+  "type": "scene_cut",
+  "desc": "analytics UI"
+ },
+ {
+  "t": 44.822,
+  "type": "hover_or_small_ui",
+  "desc": "check 1"
+ },
+ {
+  "t": 45.222,
+  "type": "hover_or_small_ui",
+  "desc": "check 2"
+ },
+ {
+  "t": 45.622,
+  "type": "hover_or_small_ui",
+  "desc": "check 3"
+ },
+ {
+  "t": 46.022,
+  "type": "hover_or_small_ui",
+  "desc": "check 4"
+ },
+ {
+  "t": 46.722,
+  "type": "error_or_tech",
+  "desc": "bot views removed"
+ },
+ {
+  "t": 48.972,
+  "type": "success",
+  "desc": "paid automatically"
+ },
+ {
+  "t": 51.11,
+  "type": "scene_cut",
+  "desc": "proof"
+ },
+ {
+  "t": 53.11,
+  "type": "appear",
+  "desc": "3M+ lands"
+ },
+ {
+  "t": 53.584,
+  "type": "build_up",
+  "desc": "riser into closer",
+  "dur": 0.8
+ },
+ {
+  "t": 54.384,
+  "type": "reveal",
+  "desc": "silk closer"
+ },
+ {
+  "t": 55.184,
+  "type": "hover_or_small_ui",
+  "desc": "rotate"
+ },
+ {
+  "t": 55.934,
+  "type": "hover_or_small_ui",
+  "desc": "rotate"
+ },
+ {
+  "t": 56.684,
+  "type": "hover_or_small_ui",
+  "desc": "rotate"
+ },
+ {
+  "t": 57.95,
+  "type": "build_up",
+  "desc": "riser into end card",
+  "dur": 0.8
+ },
+ {
+  "t": 58.75,
+  "type": "reveal",
+  "desc": "end card"
+ },
+ {
+  "t": 60.15,
+  "type": "appear",
+  "desc": "CTAs"
+ }
+]
