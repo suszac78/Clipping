@@ -1,91 +1,98 @@
-# Content Rewards: long-form YouTube video (script draft)
+# Content Rewards: long-form YouTube video (beginner script)
 
-**Format:** tutorial + personal experience, about 4:30 (aim for 4:15–5:00; the brief requires 4+ min).
-**Voice:** yours, or an AI voiceover reading this script (the brief allows AI voiceovers).
-**Footage:** your own screen recordings of your real Content Rewards account. **Every number in [brackets] must be yours.** Don't invent results; the brief asks for authentic ones.
-**Motion graphics:** used only as editing on top of your footage (titles, highlights, captions, transitions), not as the video itself. See the note on AI-generated content at the bottom.
+**Angle:** a beginner tutorial and challenge. *"I'm starting from zero on Content Rewards. Here's exactly how it works, and you can follow along."* You don't need any earnings to make this. Everything you show is true: your real account, real campaigns, your real first submission.
 
-Pace: about 150 words a minute. Times are approximate.
+**Length:** about 4:30 (the brief requires 4+ min).
+**Voice:** an AI voiceover is allowed, or your own voice. Send me the MP3 when it's done.
+**Footage:** screen recordings of your own Content Rewards account (shot list at the bottom).
+**Never on screen:** fake earnings, fake view counts or fake payout screens. Only show numbers that are really on the campaign pages (rates, budgets, rules).
+
+Pace: about 150 words a minute.
 
 ---
 
-## 0:00–0:30 · Hook (must land inside 30 s)
+## 0:00–0:30 · Hook
 
-> **SHOW:** your real payout/earnings screen, blurred personal info. Zoom on the total.
+> **SHOW:** fast cuts: the campaigns page, a CPM rate up close, the Submit clip button.
 
-**VO:** This is [$X] I got paid for posting videos, and I didn't need a big following to do it. It came from a site called Content Rewards. Brands put up money, you make videos about them, and you get paid for every thousand views those videos get. In the next few minutes I'll show you exactly how it works, how I picked my campaigns, what I actually earned, and the mistakes that cost me money at the start.
+**VO:** There's a site where brands pay you for views on videos you post, and you don't need a big following or any experience. I'm starting from zero: no earnings, no wins yet. In this video I'll show you exactly how Content Rewards works, how to pick a campaign, how to make and submit your first video, and the rules you need to follow so you actually get paid. Then I'll submit my own first video live, so you can copy every step.
 
-> **ON SCREEN:** "Content Rewards" logo bumper (2–3 s), then a title card: *"How I got paid [$X] for views"*.
+> **ON SCREEN:** title card: *"Starting from $0 on Content Rewards"*.
 
 ## 0:30–1:15 · What Content Rewards is
 
 > **SHOW:** contentrewards.com homepage, scroll slowly.
 
-**VO:** Content Rewards calls itself "the marketplace for virality." There are two sides. Businesses launch campaigns: they set a budget, explain what content they want, and choose how creators get paid. Creators like me pick a campaign, post videos, and submit them. Content Rewards tracks the views, works out what you've earned, and pays you automatically.
+**VO:** Content Rewards calls itself "the marketplace for virality." It works like this: businesses launch campaigns, creators post videos, and payouts happen automatically. A brand sets a budget and explains what content they want. Creators like you and me post videos about the brand and submit them. Content Rewards tracks the views, works out the rewards, and pays creators automatically.
 
 There are two main kinds of campaign. **Clipping**: you cut short clips from someone's existing content, like a podcast or a stream. **UGC**, or user-generated content: you make your own original videos about the brand. Original content usually pays more because it takes more work.
 
 > **ON SCREEN:** split card "Clipping | UGC" with one line under each.
 
-## 1:15–2:30 · Tutorial: finding and joining a campaign
+## 1:15–2:00 · How you get paid
 
-> **SHOW:** screen recording. Sign in → browse campaigns → open one.
+> **SHOW:** a campaign card, zoom on the payout type.
 
-**VO:** Here's how to get started. Once you're signed in, you'll see the list of live campaigns. Each card shows the brand, the type, and how it pays. Most pay **CPM**, which means a set amount per thousand views. Others pay a monthly retainer, a flat fee per post, or a share of a pool.
+**VO:** Campaigns pay in different ways. Most use **CPM**, which means a set amount for every thousand views. Others pay a monthly retainer, a flat fee per post, or a share of a pool split by views.
 
-Open a campaign and read the brief. Seriously, read all of it. It tells you what to make, which platforms count, the minimum views, and the rules. For example, the campaign I'm in right now pays [$15 per 1,000 views] for English content aimed at the US, UK, Canada and Australia, with a maximum payout of [$3,000]. *(Use the numbers from your own campaign page.)*
+And you only get paid for real views. Every view is checked for bot traffic, so buying fake views does nothing. Real people have to watch your video.
 
-When you find one you like, hit **Join**.
+> **ON SCREEN:** four tiles: CPM / Retainer / Per post / Pool.
 
-> **ON SCREEN:** highlight box sweeping over the rate and the rules on your real campaign page.
+## 2:00–3:00 · Tutorial: picking a campaign
 
-**VO:** My tip here: [your real tip, e.g. "pick campaigns in a niche you already watch, because your videos will come out better and faster"].
+> **SHOW:** screen recording. Sign in, browse campaigns, open one, scroll the brief.
 
-## 2:30–3:20 · Tutorial: making and submitting a video
+**VO:** Here's how to pick one. Once you're signed in, you see all the live campaigns. Each one shows the brand, the type, and how it pays.
 
-> **SHOW:** your editing timeline briefly, then the posted video, then the Submit clip flow.
+Open a campaign and read the whole brief, because this is where most beginners mess up. It tells you what to make, which platforms count, which countries count, and the rules.
 
-**VO:** Then you make the video. [Briefly: how you make yours: what you film, how long it takes, what tools you use.]
+For example, here's the one I joined: Long-form UGC. They want YouTube videos over four minutes showing Content Rewards. It pays [$15 per 1,000 views] for English content aimed at the US, UK, Canada or Australia, up to a maximum of [$3,000]. And the rules say I have to put a specific hashtag and my referral link in the description, the pinned comment and my channel bio. *(Read these from your real campaign page.)*
 
-Post it on the platform the campaign asks for, copy the link, go back to the campaign and press **Submit clip**. Paste the link and submit. The brand reviews it, and they can leave timestamped feedback if something needs changing. Once it's approved, your views start counting.
+When you find one that fits what you can make, hit **Join**.
 
-> **ON SCREEN:** cursor-highlight on "Submit clip"; checkmark animation on "Approved".
+> **ON SCREEN:** highlight box sweeping over the rate, the max payout and each rule.
 
-**VO:** One thing that tripped me up at first: [real mistake, e.g. "I forgot the required hashtag and my first submission got rejected"]. So follow every rule in the brief exactly.
+## 3:00–3:50 · Tutorial: making and submitting your first video
 
-## 3:20–4:10 · My real results
+> **SHOW:** your editing timeline briefly, then the posted video, then the Submit clip flow, done for real.
 
-> **SHOW:** your real analytics/payout screens, video by video.
+**VO:** Next you make the video. [One or two lines on how you're making yours: what you record, what you edit with, how long it took.]
 
-**VO:** So here's what actually happened. I submitted [N] videos over [time period]. My best one got [views] and paid [$]. In total I've earned [$X] so far.
+Post it on the platform the campaign asks for, copy the link, go back to the campaign and press **Submit clip**. Paste the link and submit. The brand reviews it, and they can leave feedback with timestamps if something needs fixing. Once it's approved, your views start counting toward your payout.
 
-Content Rewards checks every view for bot traffic before paying out, so what you see is what real people watched. [Mention any removed views if it happened to you.] Payouts arrived [your real timing].
+> **ON SCREEN:** cursor-highlight on "Submit clip"; a "Submitted" checkmark.
 
-> **ON SCREEN:** your numbers as animated count-ups (taken from your screenshots, never made up).
+**VO:** And that's my first submission done. This video you're watching right now is my entry into this campaign.
 
-**VO:** Was it worth it? [Your honest take: what went well, what didn't, who it's good for.]
+## 3:50–4:15 · The challenge
 
-## 4:10–4:40 · Call to action
+**VO:** So here's my challenge. I'm going to keep posting for the next [30] days and come back with an honest update on what I earned, even if it's zero. Subscribe if you want to see how it goes. And if you start too, comment the campaign you picked and we can compare.
 
-> **SHOW:** end card with logo, your referral link on screen.
+> **ON SCREEN:** "Day 1 / [30]" counter.
 
-**VO:** If you want to try it, my referral link is in the description and the pinned comment. Sign up, pick one campaign, and post your first video this week. And if you run a brand, you can launch your own campaign there too. Drop a comment with which campaign you're going for, and I'll see you in the next one.
+## 4:15–4:40 · Call to action
+
+> **SHOW:** end card with the logo and your referral link on screen.
+
+**VO:** If you want to try Content Rewards, my link is in the description and the pinned comment. Sign up, pick one campaign, read the brief, and post your first video this week. If you run a brand, you can launch your own campaign there too. See you in the update video.
 
 ---
 
 ## Description / pinned comment (required by the brief)
 
 ```
-I got paid [$X] for views with Content Rewards. Here's exactly how it works, step by step.
+I'm starting from $0 on Content Rewards. Here's exactly how it works, step by step, plus my first submission.
 
 Try Content Rewards: [YOUR REFERRAL LINK]
 
-0:00 What I earned
+0:00 Starting from zero
 0:30 What Content Rewards is
-1:15 Finding and joining a campaign
-2:30 Making and submitting a video
-3:20 My real results
-4:10 How to start
+1:15 How you get paid
+2:00 Picking a campaign
+3:00 Making and submitting your first video
+3:50 My challenge
+4:15 How to start
 
 #contentrewardspartner
 ```
@@ -94,14 +101,16 @@ Also put `#contentrewardspartner` and your referral link in your **channel descr
 
 ## Shot list to record
 
-1. Payout/earnings screen (blur email, bank info).
-2. contentrewards.com homepage scroll.
-3. Signed-in campaign list, opening your campaign, scrolling the brief, Join.
-4. Your editing process (30–60 s of real footage).
-5. Posting the video, then the Submit clip flow.
-6. Analytics for each submitted video; payout history.
-7. Optional: facecam for the hook and the "was it worth it" section.
+1. contentrewards.com homepage, slow scroll.
+2. Signed-in campaigns list, scrolling past a few campaigns.
+3. Opening the Long-form UGC campaign and scrolling the full brief (rate, max payout, rules).
+4. A few seconds of you editing this video.
+5. This video posted on YouTube, copying its link.
+6. The Submit clip flow, done for real (submit after you upload).
+7. Optional: facecam for the hook and the challenge section.
 
-## Note on "AI-generated content is not allowed"
+Blur anything personal (email, payment details).
 
-The brief allows AI voiceovers but not AI-generated content. A video made entirely of AI-built animation, with fictional UI and example numbers, is the kind of thing that rule is likely aimed at. That's why this plan builds the video on your own real screen recordings and results, and uses motion graphics only as editing. If you want to use the 62-second animated piece as an intro or outro, ask the campaign's support whether AI-assisted motion graphics are allowed before you submit.
+## The follow-up video
+
+In [30] days, make a second video, "What I earned in 30 days on Content Rewards". That's the one with real results, whatever they turn out to be.
