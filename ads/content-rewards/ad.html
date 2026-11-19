@@ -1,0 +1,297 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Content Rewards Ad</title>
+<style>
+  :root {
+    --bg: #07070c; --ink: #f5f5fa; --dim: #8a8aa3; --accent: #ff5a1f; --accent2: #ffb800;
+    --green: #2ee59d; --card: #14141f; --line: #26263a;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: var(--bg);
+    font-family: 'Inter Display', 'Inter', sans-serif; color: var(--ink); }
+  #stage { position: absolute; inset: 0; overflow: hidden; }
+  .layer { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; flex-direction: column; opacity: 0; }
+  .big { font-size: 120px; font-weight: 800; letter-spacing: -4px; line-height: 1.02; text-align: center; }
+  .mid { font-size: 72px; font-weight: 700; letter-spacing: -2px; text-align: center; line-height: 1.1; }
+  .small { font-size: 34px; font-weight: 500; color: var(--dim); text-align: center; }
+  .hl { color: var(--accent); }
+  .hl2 { color: var(--accent2); }
+  .g { color: var(--green); }
+  .word { display: inline-block; will-change: transform, opacity; }
+
+  /* background */
+  #grid { position: absolute; inset: -200px; background-image:
+      linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 80px 80px; opacity: .35; }
+  #glow { position: absolute; width: 1400px; height: 1400px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,90,31,.28), transparent 60%); left: 260px; top: -160px; }
+  #vignette { position: absolute; inset: 0; background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,.75)); pointer-events: none; }
+
+  /* scene 1 player */
+  #player { width: 1100px; height: 619px; border-radius: 28px; background: linear-gradient(135deg,#1c1c2b,#10101a);
+    border: 2px solid var(--line); position: relative; overflow: hidden; box-shadow: 0 40px 120px rgba(0,0,0,.6); }
+  #player .play { position: absolute; left: 50%; top: 50%; width: 150px; height: 104px; margin: -52px 0 0 -75px;
+    background: var(--accent); border-radius: 28px; }
+  #player .play::after { content: ''; position: absolute; left: 60px; top: 30px; border-left: 44px solid #fff;
+    border-top: 22px solid transparent; border-bottom: 22px solid transparent; }
+  #player .bar { position: absolute; left: 40px; right: 40px; bottom: 40px; height: 10px; background: #2a2a3d; border-radius: 5px; }
+  #player .fill { height: 100%; width: 0; background: var(--accent); border-radius: 5px; }
+  #player .time { position: absolute; right: 40px; bottom: 66px; font-size: 30px; font-weight: 600; color: var(--dim); font-variant-numeric: tabular-nums; }
+  #player .title { position: absolute; left: 40px; top: 36px; font-size: 34px; font-weight: 700; }
+
+  /* scene 2 views */
+  #views { font-size: 260px; font-weight: 800; letter-spacing: -10px; font-variant-numeric: tabular-nums; }
+
+  /* scene 3 phones */
+  #phones { position: absolute; inset: 0; }
+  .phone { position: absolute; width: 150px; height: 266px; border-radius: 22px; border: 2px solid #33334a;
+    background: linear-gradient(160deg, #1d1d2c, #0e0e17); overflow: hidden; }
+  .phone::before { content: ''; position: absolute; left: 14px; right: 14px; bottom: 30px; height: 8px; border-radius: 4px; background: rgba(255,255,255,.25); }
+  .phone::after { content: ''; position: absolute; left: 14px; width: 60%; bottom: 46px; height: 8px; border-radius: 4px; background: rgba(255,255,255,.45); }
+  .phone .tag { position: absolute; top: 12px; left: 12px; font-size: 15px; font-weight: 700; padding: 4px 9px; border-radius: 8px; background: rgba(0,0,0,.45); }
+  .phone .stripe { position: absolute; inset: 0; opacity: .55; }
+
+  /* scene 4 counter */
+  #counter { font-size: 230px; font-weight: 800; letter-spacing: -8px; font-variant-numeric: tabular-nums; color: var(--green); }
+  #platforms { display: flex; gap: 28px; margin-top: 30px; }
+  .pill { font-size: 34px; font-weight: 700; padding: 16px 34px; border-radius: 100px; border: 2px solid var(--line); background: var(--card); }
+  #chart { position: absolute; left: 0; right: 0; bottom: 0; height: 340px; }
+
+  /* scene 5 steps */
+  #steps { display: flex; gap: 48px; margin-top: 70px; }
+  .step { width: 470px; height: 370px; border-radius: 32px; background: var(--card); border: 2px solid var(--line); padding: 44px; position: relative; }
+  .step .n { font-size: 30px; font-weight: 800; color: var(--accent); width: 64px; height: 64px; border-radius: 20px; background: rgba(255,90,31,.14); display: flex; align-items: center; justify-content: center; }
+  .step h3 { font-size: 42px; white-space: nowrap; font-weight: 800; letter-spacing: -1px; margin-top: 34px; }
+  .step p { font-size: 28px; color: var(--dim); margin-top: 14px; line-height: 1.35; font-weight: 500; }
+
+  /* scene 6 end card */
+  #logo { display: flex; align-items: center; gap: 30px; }
+  #mark { width: 150px; height: 150px; border-radius: 42px; background: linear-gradient(135deg, var(--accent), var(--accent2)); position: relative; }
+  #mark::after { content: ''; position: absolute; left: 58px; top: 40px; border-left: 54px solid #fff; border-top: 35px solid transparent; border-bottom: 35px solid transparent; }
+  #wordmark { font-size: 150px; font-weight: 800; letter-spacing: -6px; }
+  #cta { margin-top: 70px; font-size: 44px; font-weight: 800; padding: 30px 70px; border-radius: 100px; background: var(--ink); color: var(--bg); }
+  #fine { position: absolute; bottom: 40px; font-size: 22px; color: #55556b; }
+  #flash { position: absolute; inset: 0; background: #fff; opacity: 0; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="grid"></div>
+  <div id="glow"></div>
+
+  <!-- S1: the long-form video -->
+  <div class="layer" id="s1">
+    <div id="player">
+      <div class="title">My best video yet (FULL DOCUMENTARY)</div>
+      <div class="play"></div>
+      <div class="time" id="ptime">0:00 / 52:14</div>
+      <div class="bar"><div class="fill" id="pfill"></div></div>
+    </div>
+    <div class="mid" id="s1t" style="margin-top:56px">You spent <span class="hl">40 hours</span> on it.</div>
+  </div>
+
+  <!-- S2: tiny views -->
+  <div class="layer" id="s2">
+    <div class="small" style="font-size:44px;margin-bottom:10px">and it got</div>
+    <div id="views">0</div>
+    <div class="small" style="font-size:44px;margin-top:10px">views.</div>
+  </div>
+
+  <!-- S2b: buried -->
+  <div class="layer" id="s2b">
+    <div class="big" id="s2bt"><span class="word">Your</span> <span class="word">best</span> <span class="word">moments</span><br><span class="word">are</span> <span class="word hl">buried.</span></div>
+  </div>
+
+  <!-- S3: clippers -->
+  <div class="layer" id="s3" style="opacity:1;display:none">
+    <div id="phones"></div>
+    <div class="mid" id="s3t" style="position:absolute;bottom:56px;"><span class="hl2">Hundreds of clippers</span> turn it into Shorts.</div>
+  </div>
+
+  <!-- S4: pay per view -->
+  <div class="layer" id="s4">
+    <svg id="chart" viewBox="0 0 1920 340" preserveAspectRatio="none">
+      <defs><linearGradient id="cg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#2ee59d" stop-opacity=".35"/><stop offset="1" stop-color="#2ee59d" stop-opacity="0"/></linearGradient></defs>
+      <path id="carea" fill="url(#cg)"/><path id="cline" fill="none" stroke="#2ee59d" stroke-width="6"/>
+    </svg>
+    <div class="small" style="font-size:40px">views across</div>
+    <div id="counter">0</div>
+    <div id="platforms"><div class="pill">YouTube Shorts</div><div class="pill">TikTok</div><div class="pill">Instagram Reels</div></div>
+  </div>
+
+  <!-- S4b: only pay for views -->
+  <div class="layer" id="s4b">
+    <div class="big" id="s4bt">You only pay for<br><span class="g">real views.</span></div>
+    <div class="small" id="s4bs" style="margin-top:40px">Set your own rate per 1,000 views. Set your budget. Done.</div>
+  </div>
+
+  <!-- S5: how it works -->
+  <div class="layer" id="s5">
+    <div class="mid">How it works</div>
+    <div id="steps">
+      <div class="step"><div class="n">1</div><h3>Launch a campaign</h3><p>Drop your long-form video and set a rate per 1K views.</p></div>
+      <div class="step"><div class="n">2</div><h3>Clippers post</h3><p>Creators cut the best moments and post them everywhere.</p></div>
+      <div class="step"><div class="n">3</div><h3>Pay for results</h3><p>You pay only for the views your clips actually earn.</p></div>
+    </div>
+  </div>
+
+  <!-- S6: end card -->
+  <div class="layer" id="s6">
+    <div id="logo"><div id="mark"></div><div id="wordmark">Content Rewards</div></div>
+    <div class="mid" id="s6t" style="margin-top:50px;font-size:60px;color:var(--dim)">One long video. <span style="color:var(--ink)">A million views.</span></div>
+    <div id="cta">Launch your campaign →</div>
+    <div id="fine">View counts shown are illustrative.</div>
+  </div>
+
+  <div id="vignette"></div>
+  <div id="flash"></div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const clamp = (x, a=0, b=1) => Math.min(b, Math.max(a, x));
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const eOut = x => 1 - Math.pow(1 - x, 3);
+const eInOut = x => x < .5 ? 4*x*x*x : 1 - Math.pow(-2*x + 2, 3) / 2;
+const eBack = x => { const c1 = 1.70158, c3 = c1 + 1; return 1 + c3*Math.pow(x-1,3) + c1*Math.pow(x-1,2); };
+// fade a layer in at a..a+d, out at b..b+d
+function win(t, a, b, d=.35) { return Math.min(eOut(prog(t, a, a+d)), 1 - eOut(prog(t, b, b+d))); }
+function set(el, o, tr='') { el.style.opacity = o; el.style.transform = tr; }
+
+// build phones for scene 3 (deterministic pseudo-random)
+let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+const tags = ['Shorts','TikTok','Reels'];
+const hues = [18, 40, 155, 280, 200, 330];
+const phones = [];
+const cols = 11, rows = 3;
+for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+  const el = document.createElement('div'); el.className = 'phone';
+  const h = hues[Math.floor(rnd()*hues.length)];
+  el.innerHTML = `<div class="stripe" style="background:linear-gradient(${Math.floor(rnd()*360)}deg,hsl(${h} 90% 55% / .7),transparent 70%)"></div><div class="tag">${tags[(r*cols+c)%3]}</div>`;
+  $('phones').appendChild(el);
+  phones.push({ el, x: 960 + (c-5)*162 - 75 + (r%2 ? 24 : -24), y: 40 + r*280, d: rnd()*0.9, rot: (rnd()-.5)*10 });
+}
+
+const fmt = n => Math.round(n).toLocaleString('en-US');
+
+function render(t) {
+  // background drift
+  $('grid').style.transform = `translate(${-(t*18)%80}px, ${-(t*10)%80}px)`;
+  $('glow').style.transform = `translate(${Math.sin(t*.4)*220}px, ${Math.cos(t*.3)*120}px)`;
+
+  // ---------- S1: 0 - 4.2 ----------
+  const s1 = win(t, 0, 3.9);
+  const pIn = eBack(prog(t, 0, .8));
+  set($('s1'), s1, `scale(${.9 + .1*pIn})`);
+  const fillP = eInOut(prog(t, .6, 3.4));
+  $('pfill').style.width = (fillP*100) + '%';
+  const secs = Math.floor(fillP * (52*60+14));
+  $('ptime').textContent = `${Math.floor(secs/60)}:${String(secs%60).padStart(2,'0')} / 52:14`;
+  const s1tp = eOut(prog(t, 1.0, 1.6));
+  set($('s1t'), s1tp, `translateY(${(1-s1tp)*40}px)`);
+
+  // ---------- S2: 4.2 - 7 ----------
+  const s2 = win(t, 4.2, 6.6, .3);
+  set($('s2'), s2, `scale(${1 + .04*prog(t,4.2,7)})`);
+  const vp = eOut(prog(t, 4.4, 5.6));
+  $('views').textContent = fmt(vp * 2147);
+  // little shake when it lands
+  const shake = prog(t,5.6,6.0) > 0 && prog(t,5.6,6.0) < 1 ? Math.sin(t*90)*6*(1-prog(t,5.6,6.0)) : 0;
+  $('views').style.transform = `translateX(${shake}px)`;
+  $('views').style.color = t > 5.6 ? '#ff4d4d' : 'var(--ink)';
+
+  // ---------- S2b: 7 - 9.6 ----------
+  const s2b = win(t, 7.0, 9.3, .25);
+  set($('s2b'), s2b);
+  [...$('s2bt').querySelectorAll('.word')].forEach((w, i) => {
+    const p = eBack(prog(t, 7.0 + i*.12, 7.5 + i*.12));
+    w.style.opacity = clamp(p*1.5);
+    w.style.transform = `translateY(${(1-p)*80}px)`;
+  });
+
+  // ---------- S3: 9.6 - 14.4 ----------
+  const s3on = t >= 9.5 && t < 14.8;
+  $('s3').style.display = s3on ? 'flex' : 'none';
+  if (s3on) {
+    const out = 1 - eOut(prog(t, 14.1, 14.6));
+    phones.forEach(p => {
+      const k = eBack(prog(t, 9.6 + p.d*1.6, 10.2 + p.d*1.6));
+      const fly = 1 - k;
+      p.el.style.opacity = clamp(k*2) * out;
+      p.el.style.left = (960 - 75 + (p.x - 960 + 75) * k) + 'px';
+      p.el.style.top = (400 + (p.y - 400) * k + Math.sin(t*1.5 + p.d*9)*8) + 'px';
+      p.el.style.transform = `scale(${.3 + .7*k}) rotate(${p.rot*k + fly*40}deg)`;
+    });
+    const tp = eOut(prog(t, 10.6, 11.2));
+    set($('s3t'), tp*out, `translateY(${(1-tp)*40}px)`);
+  }
+
+  // ---------- S4: 14.6 - 19.4 ----------
+  const s4 = win(t, 14.6, 19.0, .3);
+  set($('s4'), s4);
+  const cp = eInOut(prog(t, 14.8, 18.6));
+  $('counter').textContent = fmt(Math.pow(cp, 2.2) * 4280000);
+  $('platforms').style.opacity = eOut(prog(t, 15.4, 16.0));
+  $('platforms').style.transform = `translateY(${(1-eOut(prog(t,15.4,16.0)))*30}px)`;
+  // chart grows
+  let d = 'M0 340', pts = [];
+  const N = 60;
+  for (let i = 0; i <= N; i++) {
+    const x = i / N; if (x > cp) break;
+    const y = 330 - Math.pow(x, 2.2) * 300 - Math.sin(i*1.7)*8*x;
+    pts.push(`${x*1920} ${y}`);
+  }
+  if (pts.length) {
+    $('cline').setAttribute('d', 'M' + pts.join(' L'));
+    $('carea').setAttribute('d', 'M0 340 L' + pts.join(' L') + ` L${pts[pts.length-1].split(' ')[0]} 340 Z`);
+  }
+
+  // ---------- S4b: 19.4 - 23 ----------
+  const s4b = win(t, 19.4, 22.7, .3);
+  const sb = eBack(prog(t, 19.4, 20.0));
+  set($('s4b'), s4b, `scale(${.92 + .08*sb})`);
+  const ss = eOut(prog(t, 20.3, 20.9));
+  set($('s4bs'), ss, `translateY(${(1-ss)*30}px)`);
+
+  // ---------- S5: 23 - 28.4 ----------
+  const s5 = win(t, 23.0, 28.1, .3);
+  set($('s5'), s5);
+  [...document.querySelectorAll('.step')].forEach((el, i) => {
+    const p = eBack(prog(t, 23.3 + i*.35, 23.9 + i*.35));
+    el.style.opacity = clamp(p*1.5);
+    el.style.transform = `translateY(${(1-p)*120}px)`;
+    const active = t > 24.8 + i*1.0 && t < 25.8 + i*1.0;
+    el.style.borderColor = active ? 'var(--accent)' : 'var(--line)';
+    el.style.boxShadow = active ? '0 0 60px rgba(255,90,31,.35)' : 'none';
+  });
+
+  // ---------- S6: 28.4 - 34 ----------
+  const s6 = eOut(prog(t, 28.4, 28.8));
+  set($('s6'), s6);
+  const lm = eBack(prog(t, 28.5, 29.2));
+  $('mark').style.transform = `scale(${lm}) rotate(${(1-lm)*-90}deg)`;
+  const wm = eOut(prog(t, 28.8, 29.4));
+  $('wordmark').style.opacity = wm;
+  $('wordmark').style.transform = `translateX(${(1-wm)*-40}px)`;
+  const tg = eOut(prog(t, 29.6, 30.2));
+  set($('s6t'), tg, `translateY(${(1-tg)*30}px)`);
+  const ct = eBack(prog(t, 30.4, 31.0));
+  const pulse = t > 31 ? 1 + Math.sin((t-31)*4)*.025 : 1;
+  $('cta').style.opacity = clamp(ct*1.5);
+  $('cta').style.transform = `scale(${(.6 + .4*ct) * pulse})`;
+  $('fine').style.opacity = eOut(prog(t, 30.8, 31.4));
+
+  // flash cuts on big beats
+  const flashes = [4.2, 9.6, 14.6, 28.4];
+  let f = 0; flashes.forEach(ft => { const p = prog(t, ft, ft+.25); if (p > 0 && p < 1) f = Math.max(f, (1-p)*.18); });
+  $('flash').style.opacity = f;
+}
+window.render = render;
+window.DURATION = 34;
+// live preview when opened in a browser
+if (!window.__RENDERING) { const st = performance.now(); (function loop(){ render(((performance.now()-st)/1000) % 34); requestAnimationFrame(loop); })(); }
+</script>
+</body>
+</html>
